@@ -14,6 +14,7 @@ import (
 
 type RecipeStatsCalculator struct {
 	PostcodeDeliveryTimeFilter PostcodeDeliveryTimeFilter
+	CustomRecipeNames          []string
 }
 
 type PostcodeDeliveryTimeFilter struct {
@@ -53,7 +54,14 @@ type CountPerPostcodeAndTime struct {
 	DeliveryCount int
 }
 
-func (calc *RecipeStatsCalculator) CalculateStats(filePath string) {
+// filter criteria is passed as params, so we don't miss it
+func (calc *RecipeStatsCalculator) CalculateStats(
+	filePath string,
+	postcodeDeliveryTimeFilter PostcodeDeliveryTimeFilter,
+	customRecipeNames []string) {
+
+	calc.PostcodeDeliveryTimeFilter = postcodeDeliveryTimeFilter
+	calc.CustomRecipeNames = customRecipeNames
 
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -135,11 +143,25 @@ func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(data *Rec
 	}
 }
 
+func keyExists(key string, customRecipeNames []string) bool {
+
+	for _, v := range customRecipeNames {
+		if v == key {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (calc *RecipeStatsCalculator) filterRecipeName(data *RecipeData, filteredRecipeNames *[]string) {
 
 	recipe := data.Recipe
-	if strings.Contains(recipe, "Potato") || strings.Contains(recipe, "Veggie") || strings.Contains(recipe, "Mushroom") {
-		*filteredRecipeNames = append(*filteredRecipeNames, recipe)
+	for _, v := range calc.CustomRecipeNames {
+		if strings.Contains(recipe, v) && !keyExists(recipe, *filteredRecipeNames) {
+			*filteredRecipeNames = append(*filteredRecipeNames, recipe)
+			break
+		}
 	}
 }
 
