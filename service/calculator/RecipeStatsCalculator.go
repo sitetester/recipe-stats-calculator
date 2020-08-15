@@ -3,6 +3,7 @@ package calculator
 import (
 	"bufio"
 	json2 "encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -56,40 +57,25 @@ func (recipeStatsCalculator *RecipeStatsCalculator) CalculateStats(filePath stri
 
 	file, err := os.Open(filePath)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprint(os.Stderr, err)
 	}
 	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	json := ""
 
 	recipeCountMap := make(map[string]int)
 	postcodeCountMap := make(map[string]int)
 	deliveriesCountPerPostcode := make(map[string]int)
 	var filteredRecipeNames []string
 
-	for scanner.Scan() {
-		recipeLine := strings.Trim(scanner.Text(), " ")
+	r := bufio.NewReader(file)
+	d := json2.NewDecoder(r)
 
-		if recipeLine != "[" && recipeLine != "]" {
+	d.Token()
+	for d.More() {
+		recipeData := &RecipeData{}
+		d.Decode(recipeData)
 
-			if recipeLine == "{" {
-				json += "{\n"
-
-			} else if recipeLine == "}" || recipeLine == "}," {
-				json += "}\n"
-
-				recipeData := recipeStatsCalculator.decodeJson(json)
-				recipeStatsCalculator.calculateCountPerRecipe(recipeData, recipeCountMap)
-				recipeStatsCalculator.calculateCountPerPostcode(recipeData, postcodeCountMap)
-				recipeStatsCalculator.calculateDeliveriesCountPerPostcode(recipeData, deliveriesCountPerPostcode)
-				recipeStatsCalculator.filterRecipeName(recipeData, &filteredRecipeNames)
-
-				json = ""
-			} else {
-				json += recipeLine + "\n"
-			}
-		}
+		recipeStatsCalculator.calculateCountPerRecipe(recipeData, recipeCountMap)
+		recipeStatsCalculator.calculateCountPerPostcode(recipeData, postcodeCountMap)
 	}
 
 	expectedOutput := recipeStatsCalculator.getExpectedOutput(recipeCountMap, postcodeCountMap, deliveriesCountPerPostcode, filteredRecipeNames)
@@ -114,7 +100,7 @@ func (recipeStatsCalculator *RecipeStatsCalculator) decodeJson(json string) Reci
 	return recipeData
 }
 
-func (recipeStatsCalculator *RecipeStatsCalculator) calculateCountPerRecipe(recipeData RecipeData, recipeCountMap map[string]int) {
+func (recipeStatsCalculator *RecipeStatsCalculator) calculateCountPerRecipe(recipeData *RecipeData, recipeCountMap map[string]int) {
 
 	recipe := recipeData.Recipe
 
@@ -126,7 +112,7 @@ func (recipeStatsCalculator *RecipeStatsCalculator) calculateCountPerRecipe(reci
 	}
 }
 
-func (recipeStatsCalculator *RecipeStatsCalculator) calculateCountPerPostcode(data RecipeData, postcodeCountMap map[string]int) {
+func (recipeStatsCalculator *RecipeStatsCalculator) calculateCountPerPostcode(data *RecipeData, postcodeCountMap map[string]int) {
 
 	postcode := data.Postcode
 
@@ -138,11 +124,6 @@ func (recipeStatsCalculator *RecipeStatsCalculator) calculateCountPerPostcode(da
 	}
 }
 
-/**
-Count the number of deliveries to postcode `10120` that lie within the delivery time between `10AM` and `3PM`, examples _(`12AM` denotes midnight)_:
-    - `NO` - `9AM - 2PM`
-    - `YES` - `10AM - 2PM`
-*/
 func (recipeStatsCalculator *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(data RecipeData, deliveriesCountPerPostcode map[string]int) {
 
 	postcode := data.Postcode
@@ -262,7 +243,7 @@ func (recipeStatsCalculator *RecipeStatsCalculator) getExpectedOutput(
 	recipeStatsCalculator.setUniqueRecipeCount(recipeCountMap, &expectedOutput)
 	recipeStatsCalculator.setSortedRecipeCount(recipeCountMap, &expectedOutput)
 	recipeStatsCalculator.setBusiestPostcode(postcodeCountMap, &expectedOutput)
-	recipeStatsCalculator.setDeliveriesCountForPostCode("10120", deliveriesCountPerPostcode, &expectedOutput)
+	recipeStatsCalculator.setDeliveriesCountForPostCode(recipeStatsCalculator.PostcodeDeliveryTimeFilter.Postcode, deliveriesCountPerPostcode, &expectedOutput)
 	recipeStatsCalculator.setSortedRecipeNames(filteredRecipeNames, &expectedOutput)
 
 	return expectedOutput
