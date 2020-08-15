@@ -76,6 +76,8 @@ func (calc *RecipeStatsCalculator) CalculateStats(filePath string) {
 
 		calc.calculateCountPerRecipe(recipeData, recipeCountMap)
 		calc.calculateCountPerPostcode(recipeData, postcodeCountMap)
+		calc.calculateDeliveriesCountPerPostcode(recipeData, deliveriesCountPerPostcode)
+		calc.filterRecipeName(recipeData, &filteredRecipeNames)
 	}
 
 	expectedOutput := calc.getExpectedOutput(recipeCountMap, postcodeCountMap, deliveriesCountPerPostcode, filteredRecipeNames)
@@ -124,7 +126,7 @@ func (calc *RecipeStatsCalculator) calculateCountPerPostcode(data *RecipeData, p
 	}
 }
 
-func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(data RecipeData, deliveriesCountPerPostcode map[string]int) {
+func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(data *RecipeData, deliveriesCountPerPostcode map[string]int) {
 
 	postcode := data.Postcode
 	if postcode == calc.PostcodeDeliveryTimeFilter.Postcode && calc.isWithinDeliveryTime(data.Delivery, calc.PostcodeDeliveryTimeFilter) {
@@ -133,7 +135,7 @@ func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(data Reci
 	}
 }
 
-func (calc *RecipeStatsCalculator) filterRecipeName(data RecipeData, filteredRecipeNames *[]string) {
+func (calc *RecipeStatsCalculator) filterRecipeName(data *RecipeData, filteredRecipeNames *[]string) {
 
 	recipe := data.Recipe
 	if strings.Contains(recipe, "Potato") || strings.Contains(recipe, "Veggie") || strings.Contains(recipe, "Mushroom") {
