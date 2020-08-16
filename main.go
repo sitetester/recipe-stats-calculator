@@ -1,11 +1,15 @@
 package main
 
-import "github.com/sitetester/recipe-stats-calculator/service/calculator"
+import (
+	json2 "encoding/json"
+	"github.com/sitetester/recipe-stats-calculator/service/calculator"
+)
 
 func main() {
 
 	var r calculator.RecipeStatsCalculator
-	r.CalculateStats("./resources/hf_test_calculation_fixtures_SMALL.json",
+
+	expectedOutput := r.CalculateStats("./resources/hf_test_calculation_fixtures_SMALL.json",
 		calculator.PostcodeDeliveryTimeFilter{
 			Postcode: "10120",
 			FromAM:   10,
@@ -14,4 +18,10 @@ func main() {
 		[]string{"Potato", "Veggie", "Mushroom"},
 	)
 
+	println(prettyPrint(expectedOutput))
+}
+
+func prettyPrint(i interface{}) string {
+	s, _ := json2.MarshalIndent(i, "", "\t")
+	return string(s)
 }

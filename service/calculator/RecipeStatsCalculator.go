@@ -57,7 +57,7 @@ type CountPerPostcodeAndTime struct {
 func (calc *RecipeStatsCalculator) CalculateStats(
 	filePath string,
 	postcodeDeliveryTimeFilter PostcodeDeliveryTimeFilter,
-	customRecipeNames []string) {
+	customRecipeNames []string) ExpectedOutput {
 
 	calc.PostcodeDeliveryTimeFilter = postcodeDeliveryTimeFilter
 	calc.CustomRecipeNames = customRecipeNames
@@ -90,8 +90,7 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 		calc.filterRecipeName(recipeData, &filteredRecipeNames)
 	}
 
-	expectedOutput := calc.getExpectedOutput(recipeCountMap, postcodeCountMap, deliveriesCountPerPostcode, filteredRecipeNames)
-	println(prettyPrint(expectedOutput))
+	return calc.getExpectedOutput(recipeCountMap, postcodeCountMap, deliveriesCountPerPostcode, filteredRecipeNames)
 }
 
 func closeFile(f *os.File) {
@@ -103,11 +102,6 @@ func closeFile(f *os.File) {
 
 func toStdErr(err error) {
 	fmt.Fprintf(os.Stderr, "error: %v\n", err)
-}
-
-func prettyPrint(i interface{}) string {
-	s, _ := json2.MarshalIndent(i, "", "\t")
-	return string(s)
 }
 
 func (calc *RecipeStatsCalculator) decodeJson(json string) RecipeData {
