@@ -20,7 +20,7 @@ func TestExpectedOutput(t *testing.T) {
 		[]string{"Potato", "Veggie", "Mushroom"},
 	)
 
-	// it should return instance of ExpectedOutput
+	// expectedOutput must be instance of ExpectedOutput
 	if reflect.TypeOf(expectedOutput).Name() != "ExpectedOutput" {
 		t.Errorf("got %s, want %s", reflect.TypeOf(expectedOutput).Name(), "ExpectedOutput")
 	}
