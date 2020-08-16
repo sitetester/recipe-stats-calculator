@@ -12,8 +12,8 @@ import (
 )
 
 type RecipeStatsCalculator struct {
-	PostcodeDeliveryTimeFilter PostcodeDeliveryTimeFilter
-	CustomRecipeNames          []string
+	postcodeDeliveryTimeFilter PostcodeDeliveryTimeFilter
+	customRecipeNames          []string
 }
 
 type PostcodeDeliveryTimeFilter struct {
@@ -59,8 +59,8 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 	postcodeDeliveryTimeFilter PostcodeDeliveryTimeFilter,
 	customRecipeNames []string) ExpectedOutput {
 
-	calc.PostcodeDeliveryTimeFilter = postcodeDeliveryTimeFilter
-	calc.CustomRecipeNames = customRecipeNames
+	calc.postcodeDeliveryTimeFilter = postcodeDeliveryTimeFilter
+	calc.customRecipeNames = customRecipeNames
 
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -144,7 +144,7 @@ func (calc *RecipeStatsCalculator) calculateCountPerPostcode(data *RecipeData, p
 func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(data *RecipeData, deliveriesCountPerPostcode map[string]int) {
 
 	postcode := data.Postcode
-	if postcode == calc.PostcodeDeliveryTimeFilter.Postcode && calc.isWithinDeliveryTime(data.Delivery, calc.PostcodeDeliveryTimeFilter) {
+	if postcode == calc.postcodeDeliveryTimeFilter.Postcode && calc.isWithinDeliveryTime(data.Delivery, calc.postcodeDeliveryTimeFilter) {
 		count := deliveriesCountPerPostcode[postcode]
 		deliveriesCountPerPostcode[postcode] = count + 1
 	}
@@ -164,7 +164,7 @@ func keyExists(key string, customRecipeNames []string) bool {
 func (calc *RecipeStatsCalculator) filterRecipeName(data *RecipeData, filteredRecipeNames *[]string) {
 
 	recipe := data.Recipe
-	for _, v := range calc.CustomRecipeNames {
+	for _, v := range calc.customRecipeNames {
 		if strings.Contains(recipe, v) && !keyExists(recipe, *filteredRecipeNames) {
 			*filteredRecipeNames = append(*filteredRecipeNames, recipe)
 			break
@@ -250,9 +250,9 @@ func (calc *RecipeStatsCalculator) setDeliveriesCountForPostCode(
 	expectedOutput *ExpectedOutput) {
 
 	expectedOutput.CountPerPostcodeAndTime = CountPerPostcodeAndTime{
-		Postcode:      calc.PostcodeDeliveryTimeFilter.Postcode,
-		From:          strconv.Itoa(calc.PostcodeDeliveryTimeFilter.FromAM) + "AM",
-		To:            strconv.Itoa(calc.PostcodeDeliveryTimeFilter.ToPM) + "PM",
+		Postcode:      calc.postcodeDeliveryTimeFilter.Postcode,
+		From:          strconv.Itoa(calc.postcodeDeliveryTimeFilter.FromAM) + "AM",
+		To:            strconv.Itoa(calc.postcodeDeliveryTimeFilter.ToPM) + "PM",
 		DeliveryCount: deliveriesCountPerPostcode[postcode],
 	}
 }
@@ -274,7 +274,7 @@ func (calc *RecipeStatsCalculator) getExpectedOutput(
 	calc.setUniqueRecipeCount(recipeCountMap, &expectedOutput)
 	calc.setSortedRecipeCount(recipeCountMap, &expectedOutput)
 	calc.setBusiestPostcode(postcodeCountMap, &expectedOutput)
-	calc.setDeliveriesCountForPostCode(calc.PostcodeDeliveryTimeFilter.Postcode, deliveriesCountPerPostcode, &expectedOutput)
+	calc.setDeliveriesCountForPostCode(calc.postcodeDeliveryTimeFilter.Postcode, deliveriesCountPerPostcode, &expectedOutput)
 	calc.setSortedRecipeNames(filteredRecipeNames, &expectedOutput)
 
 	return expectedOutput
