@@ -1,15 +1,7 @@
 Recipe Stats Calculator
 ====
 
-In the given assignment we suggest you to process an automatically generated JSON file with recipe data and calculated some stats.
-
-Instructions
------
-
-1. Clone this repository.
-2. Create a new branch called `dev`.
-3. Create a pull request from your `dev` branch to the master branch.
-4. Reply to the thread you're having with our HR department telling them we can start reviewing your code
+This program processes an automatically generated JSON file with recipe data and calculate some stats.
 
 Given
 -----
@@ -85,20 +77,4 @@ Generate a JSON file of the following format:
     ]
 }
 ```
-
-Review Criteria
----
-
-We expect that the assignment will not take more than 3 - 4 hours of work. In our judgement we rely on common sense
-and do not expect production ready code. We are rather instrested in your problem solving skills and command of the programming language that you chose.
-
-It worth mentioning that we will be testing your submission against different input data sets.
-
-__General criteria from most important to less important__:
-
-1. Functional and non-functional requirements are met.
-2. Prefer application efficiency over code organisation complexity.
-3. Code is readable and comprehensible. Setup instructions and run instructions are provided.
-4. Tests are showcased (_no need to cover everything_).
-5. Supporting notes on taken decisions and further clarifications are welcome.
 
