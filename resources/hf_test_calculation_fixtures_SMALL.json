@@ -1,0 +1,32 @@
+[
+  {
+    "postcode": "10224",
+    "recipe": "Creamy Dill Chicken",
+    "delivery": "Wednesday 1AM - 7PM"
+  },
+  {
+    "postcode": "10208",
+    "recipe": "Speedy Steak Mushroom Fajitas",
+    "delivery": "Thursday 7AM - 5PM"
+  },
+  {
+    "postcode": "10120",
+    "recipe": "Cherry Balsamic Pork Chops",
+    "delivery": "Thursday 12AM - 12PM"
+  },
+  {
+    "postcode": "10224",
+    "recipe": "Creamy Dill Chicken",
+    "delivery": "Wednesday 1AM - 7PM"
+  },
+  {
+    "postcode": "10120",
+    "recipe": "Balsamic Potato Pork Chops",
+    "delivery": "Thursday 11AM - 3PM"
+  },
+  {
+    "postcode": "10120",
+    "recipe": "A5 Balsamic Veggie Chops",
+    "delivery": "Thursday 10AM - 02PM"
+  }
+]
