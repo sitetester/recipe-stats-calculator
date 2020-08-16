@@ -79,7 +79,10 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 	d.Token()
 	for d.More() {
 		recipeData := &RecipeData{}
-		d.Decode(recipeData)
+		err := d.Decode(recipeData)
+		if err != nil {
+			toStdErr(err)
+		}
 
 		calc.calculateCountPerRecipe(recipeData, recipeCountMap)
 		calc.calculateCountPerPostcode(recipeData, postcodeCountMap)
