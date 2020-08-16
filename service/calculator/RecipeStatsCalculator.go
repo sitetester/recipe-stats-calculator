@@ -48,8 +48,8 @@ type RecipeData struct {
 
 type CountPerPostcodeAndTime struct {
 	Postcode      string `json:"postcode"`
-	From          string `json:"from"`
-	To            string `json:"to"`
+	FromAM        string `json:"from"`
+	ToPM          string `json:"to"`
 	DeliveryCount int    `json:"delivery_count"`
 }
 
@@ -251,8 +251,8 @@ func (calc *RecipeStatsCalculator) setDeliveriesCountForPostCode(
 
 	expectedOutput.CountPerPostcodeAndTime = CountPerPostcodeAndTime{
 		Postcode:      calc.postcodeDeliveryTimeFilter.Postcode,
-		From:          strconv.Itoa(calc.postcodeDeliveryTimeFilter.FromAM) + "AM",
-		To:            strconv.Itoa(calc.postcodeDeliveryTimeFilter.ToPM) + "PM",
+		FromAM:        strconv.Itoa(calc.postcodeDeliveryTimeFilter.FromAM) + "AM",
+		ToPM:          strconv.Itoa(calc.postcodeDeliveryTimeFilter.ToPM) + "PM",
 		DeliveryCount: deliveriesCountPerPostcode[postcode],
 	}
 }
