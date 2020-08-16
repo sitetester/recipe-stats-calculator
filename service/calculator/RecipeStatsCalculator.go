@@ -4,7 +4,6 @@ import (
 	"bufio"
 	json2 "encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"regexp"
 	"sort"
@@ -24,21 +23,21 @@ type PostcodeDeliveryTimeFilter struct {
 }
 
 type ExpectedOutput struct {
-	UniqueRecipeCount       int
-	SortedRecipeCountData   []CountPerRecipe
-	BusiestPostcode         BusiestPostcode
-	CountPerPostcodeAndTime CountPerPostcodeAndTime
-	SortedRecipeNames       []string
+	UniqueRecipeCount       int                     `json:"unique_recipe_count"`
+	SortedRecipeCountData   []CountPerRecipe        `json:"count_per_recipe"`
+	BusiestPostcode         BusiestPostcode         `json:"busiest_postcode"`
+	CountPerPostcodeAndTime CountPerPostcodeAndTime `json:"count_per_postcode_and_time"`
+	SortedRecipeNames       []string                `json:"match_by_name"`
 }
 
 type BusiestPostcode struct {
-	Postcode      string
-	DeliveryCount int
+	Postcode      string `json:"postcode"`
+	DeliveryCount int    `json:"delivery_count"`
 }
 
 type CountPerRecipe struct {
-	Recipe string
-	Count  int
+	Recipe string `json:"recipe"`
+	Count  int    `json:"count"`
 }
 
 type RecipeData struct {
@@ -48,10 +47,10 @@ type RecipeData struct {
 }
 
 type CountPerPostcodeAndTime struct {
-	Postcode      string
-	From          string
-	To            string
-	DeliveryCount int
+	Postcode      string `json:"postcode"`
+	From          string `json:"from"`
+	To            string `json:"to"`
+	DeliveryCount int    `json:"delivery_count"`
 }
 
 // filter criteria is passed as params, so we don't miss it
@@ -65,9 +64,9 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 
 	file, err := os.Open(filePath)
 	if err != nil {
-		fmt.Fprint(os.Stderr, err)
+		toStdErr(err)
 	}
-	defer file.Close()
+	defer closeFile(file)
 
 	recipeCountMap := make(map[string]int)
 	postcodeCountMap := make(map[string]int)
@@ -92,6 +91,17 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 	println(prettyPrint(expectedOutput))
 }
 
+func closeFile(f *os.File) {
+	err := f.Close()
+	if err != nil {
+		toStdErr(err)
+	}
+}
+
+func toStdErr(err error) {
+	fmt.Fprintf(os.Stderr, "error: %v\n", err)
+}
+
 func prettyPrint(i interface{}) string {
 	s, _ := json2.MarshalIndent(i, "", "\t")
 	return string(s)
@@ -104,7 +114,7 @@ func (calc *RecipeStatsCalculator) decodeJson(json string) RecipeData {
 
 	err := json2.Unmarshal(text, &recipeData)
 	if err != nil {
-		panic(err)
+		toStdErr(err)
 	}
 
 	return recipeData
@@ -171,14 +181,14 @@ func (calc *RecipeStatsCalculator) isWithinDeliveryTime(delivery string, postcod
 	r := regexp.MustCompile(`[a-zA-Z]+\s(\d{0,2})AM\s-\s(\d{0,2})PM`)
 	matches := r.FindStringSubmatch(delivery)
 
-	i, errI := strconv.Atoi(matches[1])
-	if errI != nil {
-		log.Println(errI)
+	i, err := strconv.Atoi(matches[1])
+	if err != nil {
+		toStdErr(err)
 	}
 
-	j, errJ := strconv.Atoi(matches[2])
-	if errI != nil {
-		log.Println(errJ)
+	j, err := strconv.Atoi(matches[2])
+	if err != nil {
+		toStdErr(err)
 	}
 
 	return i >= postcodeDeliveryTimeFilter.FromAM && j <= postcodeDeliveryTimeFilter.ToPM
