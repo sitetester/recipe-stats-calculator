@@ -183,6 +183,7 @@ func (calc *RecipeStatsCalculator) isWithinDeliveryTime(delivery string) bool {
 func (calc *RecipeStatsCalculator) setUniqueRecipeCount(recipeCountMap map[string]int, expectedOutput *ExpectedOutput) {
 
 	uniqueRecipeCount := 0
+
 	for _, count := range recipeCountMap {
 		if count == 1 {
 			uniqueRecipeCount += 1
