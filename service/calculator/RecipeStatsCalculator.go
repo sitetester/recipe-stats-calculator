@@ -84,8 +84,8 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 			toStdErr(err)
 		}
 
-		calc.calculateCountPerRecipe(recipeData, recipeCountMap)
-		calc.calculateCountPerPostcode(recipeData, postcodeCountMap)
+		calc.calculateCountPerRecipe(recipeData.Recipe, recipeCountMap)
+		calc.calculateCountPerPostcode(recipeData.Postcode, postcodeCountMap)
 		calc.calculateDeliveriesCountPerPostcode(recipeData, deliveriesCountPerPostcode)
 		calc.filterRecipeName(recipeData, &filteredRecipeNames)
 	}
@@ -104,27 +104,25 @@ func toStdErr(err error) {
 	fmt.Fprintf(os.Stderr, "error: %v\n", err)
 }
 
-func (calc *RecipeStatsCalculator) calculateCountPerRecipe(recipeData *RecipeData, recipeCountMap map[string]int) {
+func (calc *RecipeStatsCalculator) calculateCountPerRecipe(recipe string, recipeCountMap map[string]int) {
 
-	recipe := recipeData.Recipe
+	_, ok := recipeCountMap[recipe]
 
-	count, ok := recipeCountMap[recipe]
 	if !ok {
 		recipeCountMap[recipe] = 1
 	} else {
-		recipeCountMap[recipe] = count + 1
+		recipeCountMap[recipe] += 1
 	}
 }
 
-func (calc *RecipeStatsCalculator) calculateCountPerPostcode(recipeData *RecipeData, postcodeCountMap map[string]int) {
+func (calc *RecipeStatsCalculator) calculateCountPerPostcode(postcode string, postcodeCountMap map[string]int) {
 
-	postcode := recipeData.Postcode
+	_, ok := postcodeCountMap[postcode]
 
-	count, ok := postcodeCountMap[postcode]
 	if !ok {
 		postcodeCountMap[postcode] = 1
 	} else {
-		postcodeCountMap[postcode] = count + 1
+		postcodeCountMap[postcode] += 1
 	}
 }
 
