@@ -131,7 +131,7 @@ func (calc *RecipeStatsCalculator) calculateCountPerPostcode(data *RecipeData, p
 func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(data *RecipeData, deliveriesCountPerPostcode map[string]int) {
 
 	postcode := data.Postcode
-	if postcode == calc.customPostcodeDeliveryTime.Postcode && calc.isWithinDeliveryTime(data.Delivery, calc.customPostcodeDeliveryTime) {
+	if postcode == calc.customPostcodeDeliveryTime.Postcode && calc.isWithinDeliveryTime(data.Delivery) {
 		count := deliveriesCountPerPostcode[postcode]
 		deliveriesCountPerPostcode[postcode] = count + 1
 	}
@@ -160,7 +160,7 @@ func (calc *RecipeStatsCalculator) filterRecipeName(data *RecipeData, filteredRe
 }
 
 // `"delivery"` always has the following format: "{weekday} {h}AM - {h}PM", i.e. "Monday 9AM - 5PM"
-func (calc *RecipeStatsCalculator) isWithinDeliveryTime(delivery string, customPostcodeDeliveryTime CustomPostcodeDeliveryTime) bool {
+func (calc *RecipeStatsCalculator) isWithinDeliveryTime(delivery string) bool {
 
 	r := regexp.MustCompile(`[a-zA-Z]+\s(\d{0,2})AM\s-\s(\d{0,2})PM`)
 	matches := r.FindStringSubmatch(delivery)
@@ -175,7 +175,7 @@ func (calc *RecipeStatsCalculator) isWithinDeliveryTime(delivery string, customP
 		toStdErr(err)
 	}
 
-	return i >= customPostcodeDeliveryTime.FromAM && j <= customPostcodeDeliveryTime.ToPM
+	return i >= calc.customPostcodeDeliveryTime.FromAM && j <= calc.customPostcodeDeliveryTime.ToPM
 }
 
 // count the number of unique recipe names
