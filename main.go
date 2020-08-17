@@ -22,6 +22,8 @@ func main() {
 }
 
 func prettyPrint(i interface{}) string {
+
 	s, _ := json2.MarshalIndent(i, "", "\t")
+
 	return string(s)
 }
