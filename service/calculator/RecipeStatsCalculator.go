@@ -137,10 +137,10 @@ func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(recipeDat
 	}
 }
 
-func keyExists(key string, customRecipeNames []string) bool {
+func alreadyFiltered(recipe string, filteredRecipeNames []string) bool {
 
-	for _, v := range customRecipeNames {
-		if v == key {
+	for _, filteredRecipeName := range filteredRecipeNames {
+		if filteredRecipeName == recipe {
 			return true
 		}
 	}
@@ -152,8 +152,8 @@ func (calc *RecipeStatsCalculator) filterRecipeName(recipeData *RecipeData, filt
 
 	recipe := recipeData.Recipe
 
-	for _, v := range calc.customRecipeNames {
-		if strings.Contains(recipe, v) && !keyExists(recipe, *filteredRecipeNames) {
+	for _, customRecipeName := range calc.customRecipeNames {
+		if strings.Contains(recipe, customRecipeName) && !alreadyFiltered(recipe, *filteredRecipeNames) {
 			*filteredRecipeNames = append(*filteredRecipeNames, recipe)
 			break
 		}
