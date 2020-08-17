@@ -53,6 +53,11 @@ type CountPerPostcodeAndTime struct {
 	DeliveryCount int    `json:"delivery_count"`
 }
 
+type CountPerPostcode struct {
+	Postcode string
+	Count    int
+}
+
 // filter criteria is passed as params, so that we couldn't miss it
 func (calc *RecipeStatsCalculator) CalculateStats(
 	filePath string,
@@ -216,22 +221,18 @@ func (expectedOutput *ExpectedOutput) setSortedRecipeCount(countPerRecipe map[st
 // find the postcode with most delivered recipes
 func (expectedOutput *ExpectedOutput) setBusiestPostcode(countPerPostcode map[string]int) *ExpectedOutput {
 
-	type PostcodeCount struct {
-		Key   string
-		Value int
+	var countPerPostcodeList []CountPerPostcode
+
+	for postcode, count := range countPerPostcode {
+		countPerPostcodeList = append(countPerPostcodeList, CountPerPostcode{postcode, count})
 	}
 
-	var postcodeCounts []PostcodeCount
-	for k, v := range countPerPostcode {
-		postcodeCounts = append(postcodeCounts, PostcodeCount{k, v})
-	}
-
-	sort.Slice(postcodeCounts, func(i, j int) bool {
-		return postcodeCounts[i].Value > postcodeCounts[j].Value
+	sort.Slice(countPerPostcodeList, func(i, j int) bool {
+		return countPerPostcodeList[i].Count > countPerPostcodeList[j].Count
 	})
 
 	expectedOutput.BusiestPostcode = BusiestPostcode{
-		Postcode: postcodeCounts[0].Key, DeliveryCount: postcodeCounts[0].Value,
+		Postcode: countPerPostcodeList[0].Postcode, DeliveryCount: countPerPostcodeList[0].Count,
 	}
 
 	return expectedOutput
