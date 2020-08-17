@@ -162,20 +162,20 @@ func (calc *RecipeStatsCalculator) filterRecipeName(recipeData *RecipeData, filt
 // `"delivery"` always has the following format: "{weekday} {h}AM - {h}PM", i.e. "Monday 9AM - 5PM"
 func (calc *RecipeStatsCalculator) isWithinDeliveryTime(delivery string) bool {
 
-	r := regexp.MustCompile(`[a-zA-Z]+\s(\d{0,2})AM\s-\s(\d{0,2})PM`)
-	matches := r.FindStringSubmatch(delivery)
+	re := regexp.MustCompile(`[a-zA-Z]+\s(\d{0,2})AM\s-\s(\d{0,2})PM`)
+	matches := re.FindStringSubmatch(delivery)
 
-	i, err := strconv.Atoi(matches[1])
+	from, err := strconv.Atoi(matches[1])
 	if err != nil {
 		toStdErr(err)
 	}
 
-	j, err := strconv.Atoi(matches[2])
+	to, err := strconv.Atoi(matches[2])
 	if err != nil {
 		toStdErr(err)
 	}
 
-	return i >= calc.customPostcodeDeliveryTime.FromAM && j <= calc.customPostcodeDeliveryTime.ToPM
+	return from >= calc.customPostcodeDeliveryTime.FromAM && to <= calc.customPostcodeDeliveryTime.ToPM
 }
 
 // count the number of unique recipe names
