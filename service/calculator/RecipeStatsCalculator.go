@@ -178,7 +178,7 @@ func alreadyFiltered(recipe string, filteredRecipeNames []string) bool {
 }
 
 // count the number of unique recipe names
-func (calc *RecipeStatsCalculator) setUniqueRecipeCount(recipeCountMap map[string]int, expectedOutput *ExpectedOutput) {
+func (expectedOutput *ExpectedOutput) setUniqueRecipeCount(recipeCountMap map[string]int) *ExpectedOutput {
 
 	uniqueRecipeCount := 0
 
@@ -189,10 +189,12 @@ func (calc *RecipeStatsCalculator) setUniqueRecipeCount(recipeCountMap map[strin
 	}
 
 	expectedOutput.UniqueRecipeCount = uniqueRecipeCount
+
+	return expectedOutput
 }
 
 // count the number of occurrences for each unique recipe name (alphabetically ordered by recipe name)
-func (calc *RecipeStatsCalculator) setSortedRecipeCount(recipeCountMap map[string]int, expectedOutput *ExpectedOutput) {
+func (expectedOutput *ExpectedOutput) setSortedRecipeCount(recipeCountMap map[string]int) *ExpectedOutput {
 
 	keys := make([]string, 0, len(recipeCountMap))
 
@@ -207,10 +209,12 @@ func (calc *RecipeStatsCalculator) setSortedRecipeCount(recipeCountMap map[strin
 			Recipe: k, Count: recipeCountMap[k],
 		})
 	}
+
+	return expectedOutput
 }
 
 // find the postcode with most delivered recipes
-func (calc *RecipeStatsCalculator) setBusiestPostcode(postcodeCountMap map[string]int, expectedOutput *ExpectedOutput) {
+func (expectedOutput *ExpectedOutput) setBusiestPostcode(postcodeCountMap map[string]int) *ExpectedOutput {
 
 	type PostcodeCount struct {
 		Key   string
@@ -229,22 +233,26 @@ func (calc *RecipeStatsCalculator) setBusiestPostcode(postcodeCountMap map[strin
 	expectedOutput.BusiestPostcode = BusiestPostcode{
 		Postcode: postcodeCounts[0].Key, DeliveryCount: postcodeCounts[0].Value,
 	}
+
+	return expectedOutput
 }
 
-func (calc *RecipeStatsCalculator) setDeliveriesCountForPostCode(
+func (expectedOutput *ExpectedOutput) setDeliveriesCountForPostCode(
 	postcode string,
 	deliveriesCountPerPostcode map[string]int,
-	expectedOutput *ExpectedOutput) {
+	customPostcodeDeliveryTime CustomPostcodeDeliveryTime) *ExpectedOutput {
 
 	expectedOutput.CountPerPostcodeAndTime = CountPerPostcodeAndTime{
-		Postcode:      calc.customPostcodeDeliveryTime.Postcode,
-		FromAM:        strconv.Itoa(calc.customPostcodeDeliveryTime.FromAM) + "AM",
-		ToPM:          strconv.Itoa(calc.customPostcodeDeliveryTime.ToPM) + "PM",
+		Postcode:      customPostcodeDeliveryTime.Postcode,
+		FromAM:        strconv.Itoa(customPostcodeDeliveryTime.FromAM) + "AM",
+		ToPM:          strconv.Itoa(customPostcodeDeliveryTime.ToPM) + "PM",
 		DeliveryCount: deliveriesCountPerPostcode[postcode],
 	}
+
+	return expectedOutput
 }
 
-func (calc *RecipeStatsCalculator) setSortedRecipeNames(filteredRecipeNames []string, expectedOutput *ExpectedOutput) {
+func (expectedOutput *ExpectedOutput) setSortedRecipeNames(filteredRecipeNames []string) {
 
 	sort.Strings(filteredRecipeNames)
 	expectedOutput.SortedRecipeNames = filteredRecipeNames
@@ -258,11 +266,12 @@ func (calc *RecipeStatsCalculator) getExpectedOutput(
 
 	var expectedOutput ExpectedOutput
 
-	calc.setUniqueRecipeCount(recipeCountMap, &expectedOutput)
-	calc.setSortedRecipeCount(recipeCountMap, &expectedOutput)
-	calc.setBusiestPostcode(postcodeCountMap, &expectedOutput)
-	calc.setDeliveriesCountForPostCode(calc.customPostcodeDeliveryTime.Postcode, deliveriesCountPerPostcode, &expectedOutput)
-	calc.setSortedRecipeNames(filteredRecipeNames, &expectedOutput)
+	expectedOutput.
+		setUniqueRecipeCount(recipeCountMap).
+		setSortedRecipeCount(recipeCountMap).
+		setBusiestPostcode(postcodeCountMap).
+		setDeliveriesCountForPostCode(calc.customPostcodeDeliveryTime.Postcode, deliveriesCountPerPostcode, calc.customPostcodeDeliveryTime).
+		setSortedRecipeNames(filteredRecipeNames)
 
 	return expectedOutput
 }
