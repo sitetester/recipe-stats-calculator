@@ -196,17 +196,17 @@ func (expectedOutput *ExpectedOutput) setUniqueRecipeCount(countPerRecipe map[st
 // count the number of occurrences for each unique recipe name (alphabetically ordered by recipe name)
 func (expectedOutput *ExpectedOutput) setSortedRecipeCount(countPerRecipe map[string]int) *ExpectedOutput {
 
-	keys := make([]string, 0, len(countPerRecipe))
+	recipes := make([]string, 0, len(countPerRecipe))
 
-	for k := range countPerRecipe {
-		keys = append(keys, k)
+	for recipe := range countPerRecipe {
+		recipes = append(recipes, recipe)
 	}
 
-	sort.Strings(keys)
+	sort.Strings(recipes)
 
-	for _, k := range keys {
+	for _, recipe := range recipes {
 		expectedOutput.SortedRecipesCount = append(expectedOutput.SortedRecipesCount, CountPerRecipe{
-			Recipe: k, Count: countPerRecipe[k],
+			Recipe: recipe, Count: countPerRecipe[recipe],
 		})
 	}
 
