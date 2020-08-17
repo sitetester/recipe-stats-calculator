@@ -18,8 +18,8 @@ type RecipeStatsCalculator struct {
 
 type CustomPostcodeDeliveryTime struct {
 	Postcode string
-	FromAM   int
-	ToPM     int
+	From     int
+	To       int
 }
 
 type ExpectedOutput struct {
@@ -151,7 +151,7 @@ func (calc *RecipeStatsCalculator) isWithinDeliveryTime(delivery string) bool {
 		toStdErr(err)
 	}
 
-	return from >= calc.customPostcodeDeliveryTime.FromAM && to <= calc.customPostcodeDeliveryTime.ToPM
+	return from >= calc.customPostcodeDeliveryTime.From && to <= calc.customPostcodeDeliveryTime.To
 }
 
 func (calc *RecipeStatsCalculator) filterRecipeName(recipeData *RecipeData, filteredRecipeNames *[]string) {
@@ -244,8 +244,8 @@ func (expectedOutput *ExpectedOutput) setDeliveriesCountForPostCode(
 
 	expectedOutput.CountPerPostcodeAndTime = CountPerPostcodeAndTime{
 		Postcode:      customPostcodeDeliveryTime.Postcode,
-		FromAM:        strconv.Itoa(customPostcodeDeliveryTime.FromAM) + "AM",
-		ToPM:          strconv.Itoa(customPostcodeDeliveryTime.ToPM) + "PM",
+		FromAM:        strconv.Itoa(customPostcodeDeliveryTime.From) + "AM",
+		ToPM:          strconv.Itoa(customPostcodeDeliveryTime.To) + "PM",
 		DeliveryCount: deliveriesCountPerPostcode[postcode],
 	}
 

@@ -12,8 +12,8 @@ func main() {
 	expectedOutput := r.CalculateStats("./resources/hf_test_calculation_fixtures_SMALL.json",
 		calculator.CustomPostcodeDeliveryTime{
 			Postcode: "10120",
-			FromAM:   10,
-			ToPM:     3,
+			From:     10,
+			To:       3,
 		},
 		[]string{"Potato", "Veggie", "Mushroom"},
 	)
