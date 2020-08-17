@@ -10,7 +10,7 @@ func TestExpectedOutput(t *testing.T) {
 
 	var r RecipeStatsCalculator
 
-	postcodeDeliveryTimeFilter := PostcodeDeliveryTimeFilter{
+	postcodeDeliveryTimeFilter := CustomPostcodeDeliveryTime{
 		Postcode: "10120",
 		FromAM:   10,
 		ToPM:     3,

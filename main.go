@@ -10,7 +10,7 @@ func main() {
 	var r calculator.RecipeStatsCalculator
 
 	expectedOutput := r.CalculateStats("./resources/hf_test_calculation_fixtures_SMALL.json",
-		calculator.PostcodeDeliveryTimeFilter{
+		calculator.CustomPostcodeDeliveryTime{
 			Postcode: "10120",
 			FromAM:   10,
 			ToPM:     3,
