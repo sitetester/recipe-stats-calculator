@@ -53,7 +53,7 @@ type CountPerPostcodeAndTime struct {
 	DeliveryCount int    `json:"delivery_count"`
 }
 
-// filter criteria is passed as params, so we don't miss it
+// filter criteria is passed as params, so that we couldn't miss it
 func (calc *RecipeStatsCalculator) CalculateStats(
 	filePath string,
 	customPostcodeDeliveryTime CustomPostcodeDeliveryTime,
