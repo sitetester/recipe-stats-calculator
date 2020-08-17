@@ -104,19 +104,6 @@ func toStdErr(err error) {
 	fmt.Fprintf(os.Stderr, "error: %v\n", err)
 }
 
-func (calc *RecipeStatsCalculator) decodeJson(json string) RecipeData {
-
-	text := []byte(json)
-	var recipeData RecipeData
-
-	err := json2.Unmarshal(text, &recipeData)
-	if err != nil {
-		toStdErr(err)
-	}
-
-	return recipeData
-}
-
 func (calc *RecipeStatsCalculator) calculateCountPerRecipe(recipeData *RecipeData, recipeCountMap map[string]int) {
 
 	recipe := recipeData.Recipe
