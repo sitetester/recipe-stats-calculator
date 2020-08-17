@@ -135,29 +135,6 @@ func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(recipeDat
 	}
 }
 
-func alreadyFiltered(recipe string, filteredRecipeNames []string) bool {
-
-	for _, filteredRecipeName := range filteredRecipeNames {
-		if filteredRecipeName == recipe {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (calc *RecipeStatsCalculator) filterRecipeName(recipeData *RecipeData, filteredRecipeNames *[]string) {
-
-	recipe := recipeData.Recipe
-
-	for _, customRecipeName := range calc.customRecipeNames {
-		if strings.Contains(recipe, customRecipeName) && !alreadyFiltered(recipe, *filteredRecipeNames) {
-			*filteredRecipeNames = append(*filteredRecipeNames, recipe)
-			break
-		}
-	}
-}
-
 // `"delivery"` always has the following format: "{weekday} {h}AM - {h}PM", i.e. "Monday 9AM - 5PM"
 func (calc *RecipeStatsCalculator) isWithinDeliveryTime(delivery string) bool {
 
@@ -175,6 +152,29 @@ func (calc *RecipeStatsCalculator) isWithinDeliveryTime(delivery string) bool {
 	}
 
 	return from >= calc.customPostcodeDeliveryTime.FromAM && to <= calc.customPostcodeDeliveryTime.ToPM
+}
+
+func (calc *RecipeStatsCalculator) filterRecipeName(recipeData *RecipeData, filteredRecipeNames *[]string) {
+
+	recipe := recipeData.Recipe
+
+	for _, customRecipeName := range calc.customRecipeNames {
+		if strings.Contains(recipe, customRecipeName) && !alreadyFiltered(recipe, *filteredRecipeNames) {
+			*filteredRecipeNames = append(*filteredRecipeNames, recipe)
+			break
+		}
+	}
+}
+
+func alreadyFiltered(recipe string, filteredRecipeNames []string) bool {
+
+	for _, filteredRecipeName := range filteredRecipeNames {
+		if filteredRecipeName == recipe {
+			return true
+		}
+	}
+
+	return false
 }
 
 // count the number of unique recipe names
