@@ -24,7 +24,7 @@ type PostcodeDeliveryTimeFilter struct {
 
 type ExpectedOutput struct {
 	UniqueRecipeCount       int                     `json:"unique_recipe_count"`
-	SortedRecipeCountData   []CountPerRecipe        `json:"count_per_recipe"`
+	SortedRecipesCount      []CountPerRecipe        `json:"count_per_recipe"`
 	BusiestPostcode         BusiestPostcode         `json:"busiest_postcode"`
 	CountPerPostcodeAndTime CountPerPostcodeAndTime `json:"count_per_postcode_and_time"`
 	SortedRecipeNames       []string                `json:"match_by_name"`
@@ -216,7 +216,7 @@ func (calc *RecipeStatsCalculator) setSortedRecipeCount(recipeCountMap map[strin
 	sort.Strings(keys)
 
 	for _, k := range keys {
-		expectedOutput.SortedRecipeCountData = append(expectedOutput.SortedRecipeCountData, CountPerRecipe{
+		expectedOutput.SortedRecipesCount = append(expectedOutput.SortedRecipesCount, CountPerRecipe{
 			Recipe: k, Count: recipeCountMap[k],
 		})
 	}

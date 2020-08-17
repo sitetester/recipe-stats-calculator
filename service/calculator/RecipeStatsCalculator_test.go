@@ -37,8 +37,8 @@ func TestExpectedOutput(t *testing.T) {
 	}
 
 	// checking only first recipe
-	if expectedOutput.SortedRecipeCountData[0] != countPerRecipe {
-		t.Errorf("got %v, want %v", expectedOutput.SortedRecipeCountData[0], countPerRecipe)
+	if expectedOutput.SortedRecipesCount[0] != countPerRecipe {
+		t.Errorf("got %v, want %v", expectedOutput.SortedRecipesCount[0], countPerRecipe)
 	}
 
 	// 3. Find the postcode with most delivered recipes.
