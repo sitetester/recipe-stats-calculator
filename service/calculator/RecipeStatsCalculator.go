@@ -138,7 +138,7 @@ func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(recipeDat
 // `"delivery"` always has the following format: "{weekday} {h}AM - {h}PM", i.e. "Monday 9AM - 5PM"
 func (calc *RecipeStatsCalculator) isWithinDeliveryTime(delivery string) bool {
 
-	re := regexp.MustCompile(`[a-zA-Z]+\s(\d{0,2})AM\s-\s(\d{0,2})PM`)
+	re := regexp.MustCompile(`(\d{0,2})AM\s-\s(\d{0,2})PM`)
 	matches := re.FindStringSubmatch(delivery)
 
 	from, err := strconv.Atoi(matches[1])
