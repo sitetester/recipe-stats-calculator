@@ -68,8 +68,8 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 	}
 	defer closeFile(file)
 
-	recipeCountMap := make(map[string]int)
-	postcodeCountMap := make(map[string]int)
+	countPerRecipe := make(map[string]int)
+	countPerPostcode := make(map[string]int)
 	deliveriesCountPerPostcode := make(map[string]int)
 	var filteredRecipeNames []string
 
@@ -84,13 +84,13 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 			toStdErr(err)
 		}
 
-		calc.calculateCountPerRecipe(recipeData.Recipe, recipeCountMap)
-		calc.calculateCountPerPostcode(recipeData.Postcode, postcodeCountMap)
+		calc.calculateCountPerRecipe(recipeData.Recipe, countPerRecipe)
+		calc.calculateCountPerPostcode(recipeData.Postcode, countPerPostcode)
 		calc.calculateDeliveriesCountPerPostcode(recipeData, deliveriesCountPerPostcode)
 		calc.filterRecipeName(recipeData, &filteredRecipeNames)
 	}
 
-	return calc.getExpectedOutput(recipeCountMap, postcodeCountMap, deliveriesCountPerPostcode, filteredRecipeNames)
+	return calc.getExpectedOutput(countPerRecipe, countPerPostcode, deliveriesCountPerPostcode, filteredRecipeNames)
 }
 
 func closeFile(f *os.File) {
@@ -104,25 +104,25 @@ func toStdErr(err error) {
 	fmt.Fprintf(os.Stderr, "error: %v\n", err)
 }
 
-func (calc *RecipeStatsCalculator) calculateCountPerRecipe(recipe string, recipeCountMap map[string]int) {
+func (calc *RecipeStatsCalculator) calculateCountPerRecipe(recipe string, countPerRecipe map[string]int) {
 
-	_, ok := recipeCountMap[recipe]
+	_, ok := countPerRecipe[recipe]
 
 	if !ok {
-		recipeCountMap[recipe] = 1
+		countPerRecipe[recipe] = 1
 	} else {
-		recipeCountMap[recipe] += 1
+		countPerRecipe[recipe] += 1
 	}
 }
 
-func (calc *RecipeStatsCalculator) calculateCountPerPostcode(postcode string, postcodeCountMap map[string]int) {
+func (calc *RecipeStatsCalculator) calculateCountPerPostcode(postcode string, countPerPostcode map[string]int) {
 
-	_, ok := postcodeCountMap[postcode]
+	_, ok := countPerPostcode[postcode]
 
 	if !ok {
-		postcodeCountMap[postcode] = 1
+		countPerPostcode[postcode] = 1
 	} else {
-		postcodeCountMap[postcode] += 1
+		countPerPostcode[postcode] += 1
 	}
 }
 
@@ -178,11 +178,11 @@ func alreadyFiltered(recipe string, filteredRecipeNames []string) bool {
 }
 
 // count the number of unique recipe names
-func (expectedOutput *ExpectedOutput) setUniqueRecipeCount(recipeCountMap map[string]int) *ExpectedOutput {
+func (expectedOutput *ExpectedOutput) setUniqueRecipeCount(countPerRecipe map[string]int) *ExpectedOutput {
 
 	uniqueRecipeCount := 0
 
-	for _, count := range recipeCountMap {
+	for _, count := range countPerRecipe {
 		if count == 1 {
 			uniqueRecipeCount += 1
 		}
@@ -194,11 +194,11 @@ func (expectedOutput *ExpectedOutput) setUniqueRecipeCount(recipeCountMap map[st
 }
 
 // count the number of occurrences for each unique recipe name (alphabetically ordered by recipe name)
-func (expectedOutput *ExpectedOutput) setSortedRecipeCount(recipeCountMap map[string]int) *ExpectedOutput {
+func (expectedOutput *ExpectedOutput) setSortedRecipeCount(countPerRecipe map[string]int) *ExpectedOutput {
 
-	keys := make([]string, 0, len(recipeCountMap))
+	keys := make([]string, 0, len(countPerRecipe))
 
-	for k := range recipeCountMap {
+	for k := range countPerRecipe {
 		keys = append(keys, k)
 	}
 
@@ -206,7 +206,7 @@ func (expectedOutput *ExpectedOutput) setSortedRecipeCount(recipeCountMap map[st
 
 	for _, k := range keys {
 		expectedOutput.SortedRecipesCount = append(expectedOutput.SortedRecipesCount, CountPerRecipe{
-			Recipe: k, Count: recipeCountMap[k],
+			Recipe: k, Count: countPerRecipe[k],
 		})
 	}
 
@@ -214,7 +214,7 @@ func (expectedOutput *ExpectedOutput) setSortedRecipeCount(recipeCountMap map[st
 }
 
 // find the postcode with most delivered recipes
-func (expectedOutput *ExpectedOutput) setBusiestPostcode(postcodeCountMap map[string]int) *ExpectedOutput {
+func (expectedOutput *ExpectedOutput) setBusiestPostcode(countPerPostcode map[string]int) *ExpectedOutput {
 
 	type PostcodeCount struct {
 		Key   string
@@ -222,7 +222,7 @@ func (expectedOutput *ExpectedOutput) setBusiestPostcode(postcodeCountMap map[st
 	}
 
 	var postcodeCounts []PostcodeCount
-	for k, v := range postcodeCountMap {
+	for k, v := range countPerPostcode {
 		postcodeCounts = append(postcodeCounts, PostcodeCount{k, v})
 	}
 
@@ -259,17 +259,17 @@ func (expectedOutput *ExpectedOutput) setSortedRecipeNames(filteredRecipeNames [
 }
 
 func (calc *RecipeStatsCalculator) getExpectedOutput(
-	recipeCountMap map[string]int,
-	postcodeCountMap map[string]int,
+	countPerRecipe map[string]int,
+	countPerPostcode map[string]int,
 	deliveriesCountPerPostcode map[string]int,
 	filteredRecipeNames []string) ExpectedOutput {
 
 	var expectedOutput ExpectedOutput
 
 	expectedOutput.
-		setUniqueRecipeCount(recipeCountMap).
-		setSortedRecipeCount(recipeCountMap).
-		setBusiestPostcode(postcodeCountMap).
+		setUniqueRecipeCount(countPerRecipe).
+		setSortedRecipeCount(countPerRecipe).
+		setBusiestPostcode(countPerPostcode).
 		setDeliveriesCountForPostCode(calc.customPostcodeDeliveryTime.Postcode, deliveriesCountPerPostcode, calc.customPostcodeDeliveryTime).
 		setSortedRecipeNames(filteredRecipeNames)
 
