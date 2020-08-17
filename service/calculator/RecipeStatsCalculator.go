@@ -133,8 +133,7 @@ func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(recipeDat
 	postcode := recipeData.Postcode
 
 	if postcode == calc.customPostcodeDeliveryTime.Postcode && calc.isWithinDeliveryTime(recipeData.Delivery) {
-		count := deliveriesCountPerPostcode[postcode]
-		deliveriesCountPerPostcode[postcode] = count + 1
+		deliveriesCountPerPostcode[postcode] += 1
 	}
 }
 
