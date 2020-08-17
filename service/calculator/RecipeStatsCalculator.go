@@ -151,6 +151,7 @@ func keyExists(key string, customRecipeNames []string) bool {
 func (calc *RecipeStatsCalculator) filterRecipeName(recipeData *RecipeData, filteredRecipeNames *[]string) {
 
 	recipe := recipeData.Recipe
+
 	for _, v := range calc.customRecipeNames {
 		if strings.Contains(recipe, v) && !keyExists(recipe, *filteredRecipeNames) {
 			*filteredRecipeNames = append(*filteredRecipeNames, recipe)
