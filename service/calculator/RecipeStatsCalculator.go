@@ -116,9 +116,9 @@ func (calc *RecipeStatsCalculator) calculateCountPerRecipe(recipeData *RecipeDat
 	}
 }
 
-func (calc *RecipeStatsCalculator) calculateCountPerPostcode(data *RecipeData, postcodeCountMap map[string]int) {
+func (calc *RecipeStatsCalculator) calculateCountPerPostcode(recipeData *RecipeData, postcodeCountMap map[string]int) {
 
-	postcode := data.Postcode
+	postcode := recipeData.Postcode
 
 	count, ok := postcodeCountMap[postcode]
 	if !ok {
@@ -128,10 +128,10 @@ func (calc *RecipeStatsCalculator) calculateCountPerPostcode(data *RecipeData, p
 	}
 }
 
-func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(data *RecipeData, deliveriesCountPerPostcode map[string]int) {
+func (calc *RecipeStatsCalculator) calculateDeliveriesCountPerPostcode(recipeData *RecipeData, deliveriesCountPerPostcode map[string]int) {
 
-	postcode := data.Postcode
-	if postcode == calc.customPostcodeDeliveryTime.Postcode && calc.isWithinDeliveryTime(data.Delivery) {
+	postcode := recipeData.Postcode
+	if postcode == calc.customPostcodeDeliveryTime.Postcode && calc.isWithinDeliveryTime(recipeData.Delivery) {
 		count := deliveriesCountPerPostcode[postcode]
 		deliveriesCountPerPostcode[postcode] = count + 1
 	}
@@ -148,9 +148,9 @@ func keyExists(key string, customRecipeNames []string) bool {
 	return false
 }
 
-func (calc *RecipeStatsCalculator) filterRecipeName(data *RecipeData, filteredRecipeNames *[]string) {
+func (calc *RecipeStatsCalculator) filterRecipeName(recipeData *RecipeData, filteredRecipeNames *[]string) {
 
-	recipe := data.Recipe
+	recipe := recipeData.Recipe
 	for _, v := range calc.customRecipeNames {
 		if strings.Contains(recipe, v) && !keyExists(recipe, *filteredRecipeNames) {
 			*filteredRecipeNames = append(*filteredRecipeNames, recipe)
