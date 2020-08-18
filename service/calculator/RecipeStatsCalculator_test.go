@@ -36,14 +36,29 @@ func TestExpectedOutput(t *testing.T) {
 
 	// 2. Count the number of occurrences for each unique recipe name (alphabetically ordered by recipe name)
 	t.Run("SortedRecipesCount", func(t *testing.T) {
-		countPerRecipe := CountPerRecipe{
+		countPerRecipeAtIndex0 := CountPerRecipe{
 			"A5 Balsamic Veggie Chops",
 			1,
 		}
 
-		// checking only first recipe
-		if expectedOutput.SortedRecipesCount[0] != countPerRecipe {
-			t.Errorf("got %v, want %v", expectedOutput.SortedRecipesCount[0], countPerRecipe)
+		// first recipe in sorted order
+		if expectedOutput.SortedRecipesCount[0] != countPerRecipeAtIndex0 {
+			t.Errorf("got %v, want %v", expectedOutput.SortedRecipesCount[0], countPerRecipeAtIndex0)
+		}
+
+		// it should cover all recipes
+		if len(expectedOutput.SortedRecipesCount) != 5 {
+			t.Errorf("got %v, want %v", len(expectedOutput.SortedRecipesCount), 5)
+		}
+
+		// `Creamy Dill Chicken` has two counts
+		countPerRecipeAtIndex3 := CountPerRecipe{
+			"Creamy Dill Chicken",
+			2,
+		}
+
+		if expectedOutput.SortedRecipesCount[3] != countPerRecipeAtIndex3 {
+			t.Errorf("got %v, want %v", expectedOutput.SortedRecipesCount[3], countPerRecipeAtIndex3)
 		}
 	})
 
