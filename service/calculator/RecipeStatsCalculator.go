@@ -81,6 +81,7 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 	file, err := os.Open(filePath)
 	if err != nil {
 		toStdErr(err)
+		return ExpectedOutput{}
 	}
 	defer closeFile(file)
 
