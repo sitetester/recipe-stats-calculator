@@ -245,15 +245,14 @@ func (expectedOutput *ExpectedOutput) setBusiestPostcode(countPerPostcode map[st
 
 // counts the number of deliveries to postcode `10120` that lie within the delivery time between `10AM` and `3PM`
 func (expectedOutput *ExpectedOutput) setDeliveriesCountForPostCode(
-	postcode string,
-	deliveriesCountPerPostcode map[string]int,
-	customPostcodeDeliveryTime CustomPostcodeDeliveryTime) *ExpectedOutput {
+	customPostcodeDeliveryTime CustomPostcodeDeliveryTime,
+	deliveryCount int) *ExpectedOutput {
 
 	expectedOutput.CountPerPostcodeAndTime = CountPerPostcodeAndTime{
 		Postcode:      customPostcodeDeliveryTime.Postcode,
 		FromAM:        strconv.Itoa(customPostcodeDeliveryTime.From) + "AM",
 		ToPM:          strconv.Itoa(customPostcodeDeliveryTime.To) + "PM",
-		DeliveryCount: deliveriesCountPerPostcode[postcode],
+		DeliveryCount: deliveryCount,
 	}
 
 	return expectedOutput
@@ -277,7 +276,7 @@ func (calc *RecipeStatsCalculator) getExpectedOutput(
 		setUniqueRecipeCount(countPerRecipe).
 		setSortedRecipeCount(countPerRecipe).
 		setBusiestPostcode(countPerPostcode).
-		setDeliveriesCountForPostCode(calc.customPostcodeDeliveryTime.Postcode, deliveriesCountPerPostcode, calc.customPostcodeDeliveryTime).
+		setDeliveriesCountForPostCode(calc.customPostcodeDeliveryTime, deliveriesCountPerPostcode[calc.customPostcodeDeliveryTime.Postcode]).
 		setSortedRecipeNames(filteredRecipeNames)
 
 	return expectedOutput
