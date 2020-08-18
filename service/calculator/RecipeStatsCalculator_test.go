@@ -35,7 +35,7 @@ func TestExpectedOutput(t *testing.T) {
 	})
 
 	// 2. Count the number of occurrences for each unique recipe name (alphabetically ordered by recipe name)
-	t.Run("UniqueRecipeCount", func(t *testing.T) {
+	t.Run("SortedRecipesCount", func(t *testing.T) {
 		countPerRecipe := CountPerRecipe{
 			"A5 Balsamic Veggie Chops",
 			1,
@@ -48,7 +48,7 @@ func TestExpectedOutput(t *testing.T) {
 	})
 
 	// 3. Find the postcode with most delivered recipes.
-	t.Run("UniqueRecipeCount", func(t *testing.T) {
+	t.Run("BusiestPostcode", func(t *testing.T) {
 		busiestPostcode := BusiestPostcode{
 			Postcode:      "10120",
 			DeliveryCount: 3,
@@ -60,7 +60,7 @@ func TestExpectedOutput(t *testing.T) {
 	})
 
 	// 4. Count the number of deliveries to postcode `10120` that lie within the delivery time between `10AM` and `3PM`
-	t.Run("UniqueRecipeCount", func(t *testing.T) {
+	t.Run("CountPerPostcodeAndTime", func(t *testing.T) {
 		countPerPostcodeAndTime := CountPerPostcodeAndTime{
 			Postcode:      postcodeDeliveryTimeFilter.Postcode,
 			FromAM:        strconv.Itoa(postcodeDeliveryTimeFilter.From) + "AM",
@@ -74,7 +74,7 @@ func TestExpectedOutput(t *testing.T) {
 	})
 
 	// 5.  List the recipe names (alphabetically ordered) that contain in their name one of the following words:
-	t.Run("UniqueRecipeCount", func(t *testing.T) {
+	t.Run("SortedRecipeNames", func(t *testing.T) {
 		if len(expectedOutput.SortedRecipeNames) != 3 {
 			t.Errorf("got %v, want %v", len(expectedOutput.SortedRecipeNames), 3)
 		}
