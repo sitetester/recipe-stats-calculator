@@ -58,6 +58,17 @@ type CountPerPostcode struct {
 	Count    int
 }
 
+func toLower(customRecipeNames []string) []string {
+
+	lowerCased := make([]string, 0, len(customRecipeNames))
+
+	for _, v := range customRecipeNames {
+		lowerCased = append(lowerCased, strings.ToLower(v))
+	}
+
+	return lowerCased
+}
+
 // filter criteria is passed as params, so that we couldn't miss it
 func (calc *RecipeStatsCalculator) CalculateStats(
 	filePath string,
@@ -65,7 +76,7 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 	customRecipeNames []string) ExpectedOutput {
 
 	calc.customPostcodeDeliveryTime = customPostcodeDeliveryTime
-	calc.customRecipeNames = customRecipeNames
+	calc.customRecipeNames = toLower(customRecipeNames)
 
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -164,7 +175,7 @@ func (calc *RecipeStatsCalculator) filterRecipeName(recipeData *RecipeData, filt
 	recipe := recipeData.Recipe
 
 	for _, customRecipeName := range calc.customRecipeNames {
-		if strings.Contains(recipe, customRecipeName) && !alreadyFiltered(recipe, *filteredRecipeNames) {
+		if strings.Contains(strings.ToLower(recipe), customRecipeName) && !alreadyFiltered(recipe, *filteredRecipeNames) {
 			*filteredRecipeNames = append(*filteredRecipeNames, recipe)
 			break
 		}
