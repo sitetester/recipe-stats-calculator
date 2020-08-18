@@ -211,7 +211,8 @@ func (expectedOutput *ExpectedOutput) setSortedRecipeCount(countPerRecipe map[st
 
 	for _, recipe := range recipes {
 		expectedOutput.SortedRecipesCount = append(expectedOutput.SortedRecipesCount, CountPerRecipe{
-			Recipe: recipe, Count: countPerRecipe[recipe],
+			Recipe: recipe,
+			Count:  countPerRecipe[recipe],
 		})
 	}
 
