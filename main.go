@@ -7,9 +7,9 @@ import (
 
 func main() {
 
-	var r calculator.RecipeStatsCalculator
+	var calc calculator.RecipeStatsCalculator
 
-	expectedOutput := r.CalculateStats("./resources/hf_test_calculation_fixtures_SMALL.json",
+	expectedOutput := calc.CalculateStats("./resources/hf_test_calculation_fixtures_SMALL.json",
 		calculator.CustomPostcodeDeliveryTime{
 			Postcode: "10120",
 			From:     10,
