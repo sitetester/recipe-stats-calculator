@@ -236,7 +236,8 @@ func (expectedOutput *ExpectedOutput) setBusiestPostcode(countPerPostcode map[st
 	})
 
 	expectedOutput.BusiestPostcode = BusiestPostcode{
-		Postcode: countPerPostcodeList[0].Postcode, DeliveryCount: countPerPostcodeList[0].Count,
+		Postcode:      countPerPostcodeList[0].Postcode,
+		DeliveryCount: countPerPostcodeList[0].Count,
 	}
 
 	return expectedOutput
