@@ -224,7 +224,10 @@ func (expectedOutput *ExpectedOutput) setBusiestPostcode(countPerPostcode map[st
 	var countPerPostcodeList []CountPerPostcode
 
 	for postcode, count := range countPerPostcode {
-		countPerPostcodeList = append(countPerPostcodeList, CountPerPostcode{postcode, count})
+		countPerPostcodeList = append(countPerPostcodeList, CountPerPostcode{
+			Postcode: postcode,
+			Count:    count,
+		})
 	}
 
 	sort.Slice(countPerPostcodeList, func(i, j int) bool {
