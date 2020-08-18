@@ -10,13 +10,13 @@ func TestExpectedOutput(t *testing.T) {
 
 	var r RecipeStatsCalculator
 
-	postcodeDeliveryTimeFilter := CustomPostcodeDeliveryTime{
+	customPostcodeDeliveryTime := CustomPostcodeDeliveryTime{
 		Postcode: "10120",
 		From:     10,
 		To:       3,
 	}
 	expectedOutput := r.CalculateStats("../../resources/hf_test_calculation_fixtures_SMALL.json",
-		postcodeDeliveryTimeFilter,
+		customPostcodeDeliveryTime,
 		[]string{"Potato", "Veggie", "Mushroom"},
 	)
 
@@ -62,9 +62,9 @@ func TestExpectedOutput(t *testing.T) {
 	// 4. Count the number of deliveries to postcode `10120` that lie within the delivery time between `10AM` and `3PM`
 	t.Run("CountPerPostcodeAndTime", func(t *testing.T) {
 		countPerPostcodeAndTime := CountPerPostcodeAndTime{
-			Postcode:      postcodeDeliveryTimeFilter.Postcode,
-			FromAM:        strconv.Itoa(postcodeDeliveryTimeFilter.From) + "AM",
-			ToPM:          strconv.Itoa(postcodeDeliveryTimeFilter.To) + "PM",
+			Postcode:      customPostcodeDeliveryTime.Postcode,
+			FromAM:        strconv.Itoa(customPostcodeDeliveryTime.From) + "AM",
+			ToPM:          strconv.Itoa(customPostcodeDeliveryTime.To) + "PM",
 			DeliveryCount: 2,
 		}
 
