@@ -182,7 +182,7 @@ func alreadyFiltered(recipe string, filteredRecipeNames []string) bool {
 	return false
 }
 
-// count the number of unique recipe names
+// counts the number of unique recipe names
 func (expectedOutput *ExpectedOutput) setUniqueRecipeCount(countPerRecipe map[string]int) *ExpectedOutput {
 
 	uniqueRecipeCount := 0
@@ -198,7 +198,7 @@ func (expectedOutput *ExpectedOutput) setUniqueRecipeCount(countPerRecipe map[st
 	return expectedOutput
 }
 
-// count the number of occurrences for each unique recipe name (alphabetically ordered by recipe name)
+// counts the number of occurrences for each unique recipe name (alphabetically ordered by recipe name)
 func (expectedOutput *ExpectedOutput) setSortedRecipeCount(countPerRecipe map[string]int) *ExpectedOutput {
 
 	recipes := make([]string, 0, len(countPerRecipe))
@@ -218,7 +218,7 @@ func (expectedOutput *ExpectedOutput) setSortedRecipeCount(countPerRecipe map[st
 	return expectedOutput
 }
 
-// find the postcode with most delivered recipes
+// finds the postcode with most delivered recipes
 func (expectedOutput *ExpectedOutput) setBusiestPostcode(countPerPostcode map[string]int) *ExpectedOutput {
 
 	var countPerPostcodeList []CountPerPostcode
@@ -238,6 +238,7 @@ func (expectedOutput *ExpectedOutput) setBusiestPostcode(countPerPostcode map[st
 	return expectedOutput
 }
 
+// counts the number of deliveries to postcode `10120` that lie within the delivery time between `10AM` and `3PM`
 func (expectedOutput *ExpectedOutput) setDeliveriesCountForPostCode(
 	postcode string,
 	deliveriesCountPerPostcode map[string]int,
