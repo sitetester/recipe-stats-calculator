@@ -1,7 +1,7 @@
 package main
 
 import (
-	json2 "encoding/json"
+	"encoding/json"
 	"github.com/sitetester/recipe-stats-calculator/service/calculator"
 )
 
@@ -23,7 +23,6 @@ func main() {
 
 func prettyPrint(i interface{}) string {
 
-	s, _ := json2.MarshalIndent(i, "", "\t")
-
+	s, _ := json.MarshalIndent(i, "", "\t")
 	return string(s)
 }
