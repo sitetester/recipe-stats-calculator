@@ -2,7 +2,7 @@ package calculator
 
 import (
 	"bufio"
-	json2 "encoding/json"
+	"encoding/json"
 	"fmt"
 	"os"
 	"regexp"
@@ -90,13 +90,13 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 	deliveriesCountPerPostcode := make(map[string]int)
 	var filteredRecipeNames []string
 
-	r := bufio.NewReader(file)
-	d := json2.NewDecoder(r)
+	reader := bufio.NewReader(file)
+	decoder := json.NewDecoder(reader)
 
-	d.Token()
-	for d.More() {
+	decoder.Token()
+	for decoder.More() {
 		recipeData := &RecipeData{}
-		err := d.Decode(recipeData)
+		err := decoder.Decode(recipeData)
 		if err != nil {
 			toStdErr(err)
 		}
