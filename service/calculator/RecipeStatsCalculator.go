@@ -28,6 +28,7 @@ type ExpectedOutput struct {
 	BusiestPostcode         BusiestPostcode         `json:"busiest_postcode"`
 	CountPerPostcodeAndTime CountPerPostcodeAndTime `json:"count_per_postcode_and_time"`
 	SortedRecipeNames       []string                `json:"match_by_name"`
+	TotalObjects			int64					 `json:"total_json_objects"`
 }
 
 type BusiestPostcode struct {
@@ -90,6 +91,7 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 	deliveriesCountPerPostcode := make(map[string]int)
 	var filteredRecipeNames []string
 
+	totalObjects := 0
 	reader := bufio.NewReader(file)
 	decoder := json.NewDecoder(reader)
 
@@ -101,13 +103,14 @@ func (calc *RecipeStatsCalculator) CalculateStats(
 			toStdErr(err)
 		}
 
+		totalObjects += 1
 		calc.calculateCountPerRecipe(recipeData.Recipe, countPerRecipe)
 		calc.calculateCountPerPostcode(recipeData.Postcode, countPerPostcode)
 		calc.calculateDeliveriesCountPerPostcode(recipeData, deliveriesCountPerPostcode)
 		calc.filterRecipeName(recipeData, &filteredRecipeNames)
 	}
 
-	return calc.getExpectedOutput(countPerRecipe, countPerPostcode, deliveriesCountPerPostcode, filteredRecipeNames)
+	return calc.getExpectedOutput(countPerRecipe, countPerPostcode, deliveriesCountPerPostcode, filteredRecipeNames, int64(totalObjects))
 }
 
 func closeFile(f *os.File) {
@@ -280,7 +283,9 @@ func (calc *RecipeStatsCalculator) getExpectedOutput(
 	countPerRecipe map[string]int,
 	countPerPostcode map[string]int,
 	deliveriesCountPerPostcode map[string]int,
-	filteredRecipeNames []string) ExpectedOutput {
+	filteredRecipeNames []string,
+	totalObjects int64,
+	) ExpectedOutput {
 
 	var expectedOutput ExpectedOutput
 
@@ -290,6 +295,8 @@ func (calc *RecipeStatsCalculator) getExpectedOutput(
 		setBusiestPostcode(countPerPostcode).
 		setDeliveriesCountForPostCode(calc.customPostcodeDeliveryTime, deliveriesCountPerPostcode[calc.customPostcodeDeliveryTime.Postcode]).
 		setSortedRecipeNames(filteredRecipeNames)
+
+	expectedOutput.TotalObjects = totalObjects
 
 	return expectedOutput
 }
