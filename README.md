@@ -6,8 +6,6 @@ This program processes an automatically generated JSON file with recipe data and
 Given
 -----
 
-Json fixtures file with recipe data. Download [Link](https://test-golang-recipes.s3-eu-west-1.amazonaws.com/recipe-calculation-test-fixtures/hf_test_calculation_fixtures.tar.gz)
-
 _Important notes_
 
 1. Property value `"delivery"` always has the following format: "{weekday} {h}AM - {h}PM", i.e. "Monday 9AM - 5PM"
